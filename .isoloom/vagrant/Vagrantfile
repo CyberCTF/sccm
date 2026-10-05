@@ -16,7 +16,7 @@ end
 
 Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.boot_timeout = 600
+  config.vm.boot_timeout = 900
 
   config.vm.define "dc01" do |m|
     m.vm.box = "mayfly/windows_server2019"
@@ -294,10 +294,10 @@ Vagrant.configure("2") do |config|
 
 
       [windows]
-      dc01 ansible_host=192.168.56.10
-      srv01 ansible_host=192.168.56.11
-      srv02 ansible_host=192.168.56.12
-      ws01 ansible_host=192.168.56.13
+      dc01 ansible_host=192.168.56.10 ansible_port=5985 ansible_winrm_scheme=http ansible_winrm_transport=basic
+      srv01 ansible_host=192.168.56.11 ansible_port=5985 ansible_winrm_scheme=http ansible_winrm_transport=basic
+      srv02 ansible_host=192.168.56.12 ansible_port=5985 ansible_winrm_scheme=http ansible_winrm_transport=basic
+      ws01 ansible_host=192.168.56.13 ansible_port=5985 ansible_winrm_scheme=http ansible_winrm_transport=basic
 
       [linux:vars]
       ansible_user=vagrant
@@ -308,9 +308,6 @@ Vagrant.configure("2") do |config|
       ansible_user=vagrant
       ansible_password=vagrant
       ansible_connection=winrm
-      ansible_port=5985
-      ansible_winrm_scheme=http
-      ansible_winrm_transport=basic
       ansible_winrm_server_cert_validation=ignore
       ansible_winrm_operation_timeout_sec=400
       ansible_winrm_read_timeout_sec=500
