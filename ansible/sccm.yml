@@ -1,0 +1,20 @@
+# The SCCM lab: GOAD's playbooks for it, in order (from GOAD's playbooks.yml).
+- import_playbook: build.yml
+- import_playbook: ad-servers.yml
+- import_playbook: ad-parent_domain.yml
+- import_playbook: ad-members.yml
+- import_playbook: ad-data.yml
+- import_playbook: ad-relations.yml
+- import_playbook: ad-acl.yml
+- import_playbook: servers.yml
+- import_playbook: security.yml
+- import_playbook: vulnerabilities.yml
+- import_playbook: sccm-install.yml
+- import_playbook: wait5m.yml
+- import_playbook: wait5m.yml
+- import_playbook: reboot.yml
+- import_playbook: wait5m.yml
+- import_playbook: dhcp.yml
+- import_playbook: sccm-config.yml
+- import_playbook: sccm-pxe.yml
+- import_playbook: sccm-client.yml
