@@ -38,11 +38,41 @@ machines:
 
 provision:
   - ansible: ansible/sccm.yml
-    inventory:
-      - ad/SCCM/data/inventory
-      - ad/SCCM/providers/isoloom/inventory
-      - globalsettings.ini
     requirements: ansible/requirements_311.yml
+    # The lab's own per-host variables (which domain each machine belongs to) and the keyboard layouts.
+    inventory: [ad/SCCM/data/inventory]
+    # What each machine plays in the lab: the groups GOAD's playbooks target.
+    groups:
+      domain: [dc01, srv01, srv02, ws01]
+      dc: [dc01]
+      server: [srv01, srv02]
+      workstation: [ws01]
+      parent_dc: [dc01]
+      mssql: [srv02]
+      mssql_ssms: [srv02]
+      mssql_reporting: [srv02]
+      elk_log: [dc01, srv01, ws01]
+      update: [dc01, srv01, ws01]
+      defender_on: [dc01, srv01, srv02, ws01]
+      sccm: [srv01]
+    # The lab's settings, as GOAD's playbooks read them.
+    vars:
+      sql_instance_name: MSSQLSERVER
+      sql_version: MSSQL_2022
+      admin_user: administrator
+      domain_name: SCCM
+      force_dns_server: 'no'
+      dns_server: 'x.x.x.x'
+      two_adapters: 'yes'
+      dns_server_forwarder: 1.1.1.1
+      enable_http_proxy: 'no'
+      ad_http_proxy: 'http://{{proxy_ip}}:{{proxy_port}}'
+      ad_https_proxy: 'http://{{proxy_ip}}:{{proxy_port}}'
+      add_route: 'no'
+      route_gateway: 192.168.56.1
+      route_network: 10.0.0.0/8
+      proxy_ip: 'x.x.x.x'
+      proxy_port: '8080'
 
 message: |
   SCCM is up: the domain controller at {{ machines.dc01.addresses.lab }}, the site server at

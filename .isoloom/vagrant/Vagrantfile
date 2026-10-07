@@ -317,6 +317,53 @@ Vagrant.configure("2") do |config|
       ansible_winrm_server_cert_validation=ignore
       ansible_winrm_operation_timeout_sec=400
       ansible_winrm_read_timeout_sec=500
+
+      [domain]
+      dc01
+      srv01
+      srv02
+      ws01
+
+      [dc]
+      dc01
+
+      [server]
+      srv01
+      srv02
+
+      [workstation]
+      ws01
+
+      [parent_dc]
+      dc01
+
+      [mssql]
+      srv02
+
+      [mssql_ssms]
+      srv02
+
+      [mssql_reporting]
+      srv02
+
+      [elk_log]
+      dc01
+      srv01
+      ws01
+
+      [update]
+      dc01
+      srv01
+      ws01
+
+      [defender_on]
+      dc01
+      srv01
+      srv02
+      ws01
+
+      [sccm]
+      srv01
       INV
     SH
     m.vm.provision "shell", name: "ansible", inline: <<~'SH'
@@ -325,7 +372,7 @@ Vagrant.configure("2") do |config|
       export PATH=/opt/ansible/bin:$PATH ANSIBLE_HOST_KEY_CHECKING=False ANSIBLE_GATHERING=smart ANSIBLE_FORKS=20 ANSIBLE_PIPELINING=True ANSIBLE_CACHE_PLUGIN=jsonfile ANSIBLE_CACHE_PLUGIN_CONNECTION=/tmp/isoloom-facts ANSIBLE_CACHE_PLUGIN_TIMEOUT=7200
       cd /opt/isoloom/ansible
       ansible-galaxy install -r /opt/isoloom/ansible/requirements_311.yml
-      ansible-playbook -i /etc/isoloom/inventory.ini -i /opt/isoloom/ad/SCCM/data/inventory -i /opt/isoloom/ad/SCCM/providers/isoloom/inventory -i /opt/isoloom/globalsettings.ini sccm.yml
+      ansible-playbook -i /etc/isoloom/inventory.ini -i /opt/isoloom/ad/SCCM/data/inventory -e '{"sql_instance_name":"MSSQLSERVER","sql_version":"MSSQL_2022","admin_user":"administrator","domain_name":"SCCM","force_dns_server":"no","dns_server":"x.x.x.x","two_adapters":"yes","dns_server_forwarder":"1.1.1.1","enable_http_proxy":"no","ad_http_proxy":"http://{{proxy_ip}}:{{proxy_port}}","ad_https_proxy":"http://{{proxy_ip}}:{{proxy_port}}","add_route":"no","route_gateway":"192.168.56.1","route_network":"10.0.0.0/8","proxy_ip":"x.x.x.x","proxy_port":"8080"}' sccm.yml
     SH
   end
 end
