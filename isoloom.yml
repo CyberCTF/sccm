@@ -7,34 +7,30 @@ name: sccm
 networks:
   lab: { cidr: 192.168.56.0/24 }
 
-# Every box is GOAD's Windows Server 2019 image, 2 CPUs, 4 GB, WinRM set up by the box itself.
+# Every machine is a Windows Server 2019 box that only sets up WinRM itself; GOAD's Ansible does
+# the rest from the controller. Said once here; a machine's own value wins.
 common:
+  os: windows-server@2019
   resources: { cpus: 2, memory_mb: 4000 }
-  vm:
-    os: windows-server-2019
-    image: { vagrant: mayfly/windows_server2019 }
-    provision: [vagrant/ConfigureRemotingForAnsible.ps1]
+  app:
+    steps: [{ run: vagrant/ConfigureRemotingForAnsible.ps1 }]
 
 machines:
   dc01:
     networks: { lab: 10 }
-    services: [{ port: 53, name: dns }, { port: 88, name: kerberos }, { port: 389, name: ldap }, { port: 445, name: smb }]
-    vm: {}
+    ports: { dns: 53, kerberos: 88, ldap: 389, smb: 445 }
 
   srv01:
     networks: { lab: 11 }
-    services: [{ port: 445, name: smb }]
-    vm: {}
+    ports: { smb: 445 }
 
   srv02:
     networks: { lab: 12 }
-    services: [{ port: 445, name: smb }]
-    vm: {}
+    ports: { smb: 445 }
 
   ws01:
     networks: { lab: 13 }
-    services: [{ port: 445, name: smb }]
-    vm: {}
+    ports: { smb: 445 }
 
 provision:
   - ansible: ansible/sccm.yml
